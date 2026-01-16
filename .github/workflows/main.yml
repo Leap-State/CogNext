@@ -10,47 +10,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout do código
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # NodeJS (exigido pelo Capacitor)
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      # Instalar dependências
       - name: Install dependencies
         run: npm install
 
-      # Build do front-end (Vite / React)
       - name: Build web app
         run: npm run build
 
-      # Java para Android / Gradle
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 21
 
-      # Adicionar Android (se não existir)
       - name: Add Android platform
         run: npx cap add android || true
 
-      # Sincronizar Capacitor
       - name: Capacitor sync
         run: npx cap sync android
 
-      # Build do APK (debug)
       - name: Build APK
         run: |
           cd android
           chmod +x ./gradlew
           ./gradlew assembleDebug
 
-      # Upload do APK como artifact
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
