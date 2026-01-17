@@ -1,12 +1,20 @@
 import { AdMob, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
+import { Capacitor } from '@capacitor/core';
 
-// IDs de teste do Google - substitua pelos seus IDs reais em produção
-const TEST_BANNER_ID = 'ca-app-pub-6111888174936788~3299172981';
-const TEST_INTERSTITIAL_ID = 'ca-app-pub-6111888174936788~3299172981';
+// IDs de teste OFICIAIS do Google para desenvolvimento
+// Estes funcionam em qualquer app durante o desenvolvimento
+const GOOGLE_TEST_BANNER_ID = 'ca-app-pub-3940256099942544/6300978111';
+const GOOGLE_TEST_INTERSTITIAL_ID = 'ca-app-pub-3940256099942544/1033173712';
 
 let isInitialized = false;
 
 export async function initializeAdMob() {
+  // Só inicializa em plataforma nativa (não no browser)
+  if (!Capacitor.isNativePlatform()) {
+    console.log('AdMob: Skipping initialization on web platform');
+    return;
+  }
+  
   if (isInitialized) return;
   
   try {
@@ -20,7 +28,13 @@ export async function initializeAdMob() {
   }
 }
 
-export async function showBannerAd(adId: string = TEST_BANNER_ID) {
+export async function showBannerAd(adId: string = GOOGLE_TEST_BANNER_ID) {
+  // Só exibe em plataforma nativa
+  if (!Capacitor.isNativePlatform()) {
+    console.log('AdMob: Banner ads only work on native platforms');
+    return;
+  }
+  
   try {
     await initializeAdMob();
     
@@ -45,7 +59,13 @@ export async function hideBannerAd() {
   }
 }
 
-export async function showInterstitialAd(adId: string = TEST_INTERSTITIAL_ID) {
+export async function showInterstitialAd(adId: string = GOOGLE_TEST_INTERSTITIAL_ID) {
+  // Só exibe em plataforma nativa
+  if (!Capacitor.isNativePlatform()) {
+    console.log('AdMob: Interstitial ads only work on native platforms');
+    return;
+  }
+  
   try {
     await initializeAdMob();
     
