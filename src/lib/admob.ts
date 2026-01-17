@@ -1,8 +1,8 @@
 import { AdMob, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 
 // IDs de teste do Google - substitua pelos seus IDs reais em produção
-const TEST_BANNER_ID = 'ca-app-pub-3940256099942544/6300978111';
-const TEST_INTERSTITIAL_ID = 'ca-app-pub-3940256099942544/1033173712';
+const TEST_BANNER_ID = 'ca-app-pub-6111888174936788~3299172981';
+const TEST_INTERSTITIAL_ID = 'ca-app-pub-6111888174936788~3299172981';
 
 let isInitialized = false;
 
