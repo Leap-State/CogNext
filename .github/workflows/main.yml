@@ -8,6 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      VITE_ADMOB_APP_ID: ${{ secrets.VITE_ADMOB_APP_ID }}
+      VITE_ADMOB_BANNER_ID: ${{ secrets.VITE_ADMOB_BANNER_ID }}
+      VITE_ADS_ENABLED: ${{ secrets.VITE_ADS_ENABLED }}
 
     steps:
       - name: Checkout repo
