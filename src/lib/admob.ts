@@ -19,7 +19,7 @@ export async function initializeAdMob() {
   
   try {
     await AdMob.initialize({
-      initializeForTesting: true, // Mude para false em produção
+      initializeForTesting: false,
     });
     isInitialized = true;
     console.log('AdMob initialized successfully');
@@ -43,7 +43,7 @@ export async function showBannerAd(adId: string = GOOGLE_TEST_BANNER_ID) {
       adSize: BannerAdSize.BANNER,
       position: BannerAdPosition.BOTTOM_CENTER,
       margin: 0,
-      isTesting: true, // Mude para false em produção
+      isTesting: false,
     });
     console.log('Banner ad displayed');
   } catch (error) {
@@ -71,7 +71,7 @@ export async function showInterstitialAd(adId: string = GOOGLE_TEST_INTERSTITIAL
     
     await AdMob.prepareInterstitial({
       adId,
-      isTesting: true, // Mude para false em produção
+      isTesting: false,
     });
     
     await AdMob.showInterstitial();
