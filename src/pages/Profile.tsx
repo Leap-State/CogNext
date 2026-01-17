@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Settings, MapPin, Calendar, Shield, Edit3, LogOut, ChevronRight, Globe } from 'lucide-react';
+import { Settings, MapPin, Calendar, Shield, Edit3, LogOut, ChevronRight, Globe, FileText, X } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AppLanguage } from '@/types';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export const Profile: React.FC = () => {
   const { id } = useParams();
@@ -13,6 +14,7 @@ export const Profile: React.FC = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
   const [editData, setEditData] = useState({
     name: user?.name || '',
     bio: user?.bio || '',
@@ -93,6 +95,17 @@ export const Profile: React.FC = () => {
               </button>
             ))}
           </div>
+          
+          {/* Terms of Use Button */}
+          <button
+            onClick={() => setShowTerms(true)}
+            className="mt-4 flex items-center gap-2 text-foreground hover:text-primary transition-colors"
+          >
+            <FileText size={18} />
+            <span className="font-medium">{t.termsOfUse || 'Termos de Uso'}</span>
+            <ChevronRight size={16} className="ml-auto" />
+          </button>
+
           <button
             onClick={handleLogout}
             className="mt-4 flex items-center gap-2 text-destructive hover:opacity-80 transition-opacity"
@@ -102,6 +115,64 @@ export const Profile: React.FC = () => {
           </button>
         </div>
       )}
+
+      {/* Terms of Use Modal */}
+      <Dialog open={showTerms} onOpenChange={setShowTerms}>
+        <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText size={20} />
+              {t.termsTitle || 'Termos de Uso e Privacidade'}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 text-sm">
+            <p className="text-muted-foreground">
+              {t.termsIntro || 'Ao utilizar o CogNext, você concorda com os seguintes termos:'}
+            </p>
+            
+            {/* Privacy Section */}
+            <div className="bg-muted/50 rounded-lg p-4">
+              <h4 className="font-semibold text-foreground flex items-center gap-2 mb-2">
+                <Shield size={16} className="text-primary" />
+                {t.termsPrivacy || 'Responsabilidade sobre Privacidade'}
+              </h4>
+              <p className="text-muted-foreground leading-relaxed">
+                {t.termsPrivacyText || 'Você é o único responsável pelas informações que compartilha no aplicativo. Recomendamos que não divulgue dados pessoais sensíveis como endereço, documentos ou informações financeiras em publicações públicas.'}
+              </p>
+            </div>
+            
+            {/* Ads Section */}
+            <div className="bg-muted/50 rounded-lg p-4">
+              <h4 className="font-semibold text-foreground flex items-center gap-2 mb-2">
+                <span className="text-primary">📢</span>
+                {t.termsAds || 'Sobre os Anúncios'}
+              </h4>
+              <p className="text-muted-foreground leading-relaxed">
+                {t.termsAdsText || 'Este aplicativo exibe anúncios para manter o serviço gratuito. Os anúncios são fornecidos por terceiros (Google AdMob) e podem coletar dados anônimos para personalização. Ao usar o app, você consente com a exibição de anúncios.'}
+              </p>
+            </div>
+            
+            {/* Data Usage Section */}
+            <div className="bg-muted/50 rounded-lg p-4">
+              <h4 className="font-semibold text-foreground flex items-center gap-2 mb-2">
+                <span className="text-primary">💾</span>
+                {t.termsData || 'Uso de Dados'}
+              </h4>
+              <p className="text-muted-foreground leading-relaxed">
+                {t.termsDataText || 'Os resultados dos testes e suas interações são armazenados localmente no seu dispositivo. Não compartilhamos seus dados pessoais com terceiros sem seu consentimento.'}
+              </p>
+            </div>
+          </div>
+          
+          <Button 
+            onClick={() => setShowTerms(false)} 
+            className="w-full gradient-primary mt-4"
+          >
+            {t.termsAccept || 'Entendi e Aceito'}
+          </Button>
+        </DialogContent>
+      </Dialog>
 
       {/* Profile Info */}
       <div className="p-6 border-b border-border">
