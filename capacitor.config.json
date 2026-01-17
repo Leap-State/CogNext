@@ -1,9 +1,5 @@
 {
   "appId": "app.lovable.ed2909e2c06b4cee8f59885dead9ee95",
   "appName": "CogNext",
-  "webDir": "dist",
-  "server": {
-    "url": "https://ed2909e2-c06b-4cee-8f59-885dead9ee95.lovableproject.com?forceHideBadge=true",
-    "cleartext": true
-  }
+  "webDir": "dist"
 }
