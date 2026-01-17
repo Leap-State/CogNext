@@ -3,8 +3,8 @@ import { Capacitor } from '@capacitor/core';
 
 // IDs de teste OFICIAIS do Google para desenvolvimento
 // Estes funcionam em qualquer app durante o desenvolvimento
-const GOOGLE_TEST_BANNER_ID = 'ca-app-pub-3940256099942544/6300978111';
-const GOOGLE_TEST_INTERSTITIAL_ID = 'ca-app-pub-3940256099942544/1033173712';
+const GOOGLE_TEST_BANNER_ID = 'ca-app-pub-6111888174936788/1063536663';
+const GOOGLE_TEST_INTERSTITIAL_ID = 'ca-app-pub-6111888174936788/9038584824';
 
 let isInitialized = false;
 
