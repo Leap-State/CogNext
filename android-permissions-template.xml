@@ -1,0 +1,48 @@
+<!--
+  PERMISSÕES ANDROID PARA O COGNEXT
+  
+  Após rodar "npx cap add android", adicione estas permissões no arquivo:
+  android/app/src/main/AndroidManifest.xml
+  
+  Cole estas linhas DENTRO da tag <manifest> e ANTES da tag <application>
+-->
+
+<!-- PERMISSÕES ESSENCIAIS -->
+<!-- Acesso à Internet (obrigatório para AdMob e funcionamento do app) -->
+<uses-permission android:name="android.permission.INTERNET" />
+
+<!-- Verificar estado da conexão de rede -->
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+<!-- PERMISSÕES OPCIONAIS (descomente se necessário) -->
+
+<!-- Manter o dispositivo acordado (para notificações/tarefas em background) -->
+<!-- <uses-permission android:name="android.permission.WAKE_LOCK" /> -->
+
+<!-- Acesso à câmera (para foto de perfil) -->
+<!-- <uses-permission android:name="android.permission.CAMERA" /> -->
+
+<!-- Acesso ao armazenamento para salvar/ler arquivos (Android 12 e anterior) -->
+<!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> -->
+<!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
+
+<!-- Acesso a fotos e vídeos (Android 13+) -->
+<!-- <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> -->
+<!-- <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" /> -->
+
+<!-- Vibração (para feedback tátil) -->
+<!-- <uses-permission android:name="android.permission.VIBRATE" /> -->
+
+<!-- Notificações push (Android 13+) -->
+<!-- <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> -->
+
+<!-- Iniciar na inicialização do dispositivo -->
+<!-- <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> -->
+
+<!--
+  IMPORTANTE: Dentro da tag <application>, adicione também:
+  
+  <meta-data
+      android:name="com.google.android.gms.ads.APPLICATION_ID"
+      android:value="SEU_ADMOB_APP_ID"/>
+-->
