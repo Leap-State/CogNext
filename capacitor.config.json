@@ -2,15 +2,10 @@
   "appId": "app.lovable.ed2909e2c06b4cee8f59885dead9ee95",
   "appName": "CogNext",
   "webDir": "dist",
-  "android": {
-    "allowMixedContent": false,
-    "captureInput": true,
-    "webContentsDebuggingEnabled": false
-  },
+  "bundledWebRuntime": false,
   "server": {
-    "androidScheme": "http",
-    "hostname": "localhost",
-    "cleartext": true
+    "androidScheme": "https"
+  }
   },
   "plugins": {
     "AdMob": {
