@@ -6,11 +6,4 @@
   "server": {
     "androidScheme": "https"
   }
-  },
-  "plugins": {
-    "AdMob": {
-      "appId": "ca-app-pub-6111888174936788~3299172981",
-      "bannerAdId": "ca-app-pub-6111888174936788/1063536663",
-      "interstitialAdId": "ca-app-pub-6111888174936788/9038584824"
-    }
-  }
+}
