@@ -1,4 +1,5 @@
-{ "appId": "ca-app-pub-6111888174936788~3299172981",
+{
+  "appId": "app.lovable.ed2909e2c06b4cee8f59885dead9ee95",
   "appName": "CogNext",
   "webDir": "dist",
   "android": {
