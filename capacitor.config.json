@@ -7,6 +7,11 @@
     "captureInput": true,
     "webContentsDebuggingEnabled": false
   },
+  "server": {
+    "androidScheme": "http",
+    "hostname": "localhost",
+    "cleartext": true
+  },
   "plugins": {
     "AdMob": {
       "appId": "ca-app-pub-6111888174936788~3299172981",

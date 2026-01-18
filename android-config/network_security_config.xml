@@ -9,13 +9,18 @@
   android:networkSecurityConfig="@xml/network_security_config"
 -->
 <network-security-config>
-    <!-- Configuração base para produção -->
+    <!-- Configuração base (bloqueia HTTP para a internet) -->
     <base-config cleartextTrafficPermitted="false">
         <trust-anchors>
             <certificates src="system" />
         </trust-anchors>
     </base-config>
-    
+
+    <!-- Permite SOMENTE o tráfego local do app (Capacitor) via http://localhost -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">localhost</domain>
+    </domain-config>
+
     <!-- Domínios confiáveis (HTTPS) -->
     <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="true">lovableproject.com</domain>
@@ -26,3 +31,4 @@
         <domain includeSubdomains="true">googleapis.com</domain>
     </domain-config>
 </network-security-config>
+

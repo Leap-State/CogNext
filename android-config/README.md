@@ -37,6 +37,9 @@ npx cap sync android
 npx cap run android
 ```
 
+> Dica (Android 15): este projeto força `http://localhost` (tráfego local do Capacitor) e libera **apenas** `localhost` no `network_security_config.xml` para evitar travar na abertura.
+
+
 ## ⚠️ Solução de Problemas
 
 ### App fechando ao abrir
