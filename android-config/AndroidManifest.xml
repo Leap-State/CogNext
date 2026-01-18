@@ -26,13 +26,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="false"
+        android:usesCleartextTraffic="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:hardwareAccelerated="true">
 
         <activity
             android:name=".MainActivity"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBarLaunch">
@@ -41,6 +41,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
 
         <!-- AdMob App ID -->
         <meta-data
