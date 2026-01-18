@@ -1,5 +1,17 @@
 {
   "appId": "app.lovable.ed2909e2c06b4cee8f59885dead9ee95",
   "appName": "CogNext",
-  "webDir": "dist"
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "plugins": {
+    "AdMob": {
+      "appId": "ca-app-pub-6111888174936788~XXXXXXXXXX",
+      "bannerAdId": "ca-app-pub-6111888174936788/1063536663",
+      "interstitialAdId": "ca-app-pub-6111888174936788/9038584824"
+    }
+  }
 }
