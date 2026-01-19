@@ -19,9 +19,9 @@ jobs:
       - name: Install PWABuilder CLI
         run: npm install -g @pwabuilder/cli
 
-      - name: Generate Android package
+      - name: Generate Android APK
         run: |
-          pwabuilder \
+          npx pwabuilder \
             https://cog-next-3h6w.vercel.app/manifest.json \
             --platform android \
             --output ./android-build \
