@@ -1,0 +1,35 @@
+name: Build Android APK (PWA)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install PWABuilder CLI
+        run: npm install -g @pwabuilder/cli
+
+      - name: Generate Android package
+        run: |
+          pwabuilder \
+            https://cog-next-3h6w.vercel.app/manifest.json \
+            --platform android \
+            --output ./android-build \
+            --androidPackageId com.cog.next \
+            --androidAppName CogNext
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: android-build/**/*.apk
