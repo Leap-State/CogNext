@@ -1,0 +1,44 @@
+name: Build Android APK (TWA)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install Bubblewrap
+        run: npm install -g @bubblewrap/cli
+
+      - name: Init TWA
+        run: |
+          bubblewrap init \
+            --manifest=https://cog-next-3h6w.vercel.app/manifest.json \
+            --directory=twa \
+            --yes
+
+      - name: Build APK
+        run: |
+          cd twa
+          bubblewrap build
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: twa/app-release.apk
