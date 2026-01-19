@@ -7,6 +7,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      CI: true
+      BUBBLEWRAP_JDK: /usr/lib/jvm/temurin-17-jdk-amd64
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,26 +26,23 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Expose JAVA_HOME for Bubblewrap
-        run: echo "BUBBLEWRAP_JDK=$JAVA_HOME" >> $GITHUB_ENV
-
       - name: Install Bubblewrap CLI
         run: npm install -g @bubblewrap/cli
 
-      - name: Init TWA (non-interactive)
+      - name: Init TWA (CI forced)
         run: |
           bubblewrap init \
             --manifest=https://cog-next-3h6w.vercel.app/manifest.json \
             --directory=twa \
-            --jdkPath=$JAVA_HOME \
-            --yes
+            --no-prompt \
+            --force
 
       - name: Build APK
         run: |
           cd twa
           bubblewrap build
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
