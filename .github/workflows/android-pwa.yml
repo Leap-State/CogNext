@@ -16,17 +16,19 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install PWABuilder CLI
-        run: npm install -g @pwabuilder/cli
-
-      - name: Generate Android APK
+      - name: Generate Android APK via PWABuilder
         run: |
-          npx pwabuilder \
-            https://cog-next-3h6w.vercel.app/manifest.json \
+          npx pwabuilder https://cog-next-3h6w.vercel.app \
             --platform android \
-            --output ./android-build \
-            --androidPackageId com.cog.next \
-            --androidAppName CogNext
+            --androidGenerateApk true \
+            --androidPackageId com.cognext.app \
+            --androidAppName CogNext \
+            --output ./android-build
+
+      - name: Inspect output
+        run: |
+          echo "=== android-build tree ==="
+          find android-build -type f
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
