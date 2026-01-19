@@ -14,24 +14,29 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
 
-      - name: Generate Android APK via PWABuilder
+      - name: Install PWABuilder CLI
+        run: npm install -g @pwabuilder/cli
+
+      - name: Generate Android APK
         run: |
-          npx pwabuilder https://cog-next-3h6w.vercel.app \
+          pwabuilder https://cog-next-3h6w.vercel.app \
             --platform android \
             --androidGenerateApk true \
             --androidPackageId com.cognext.app \
             --androidAppName CogNext \
-            --output ./android-build
+            --output android-build
 
       - name: Inspect output
         run: |
           echo "=== android-build tree ==="
-          find android-build -type f
+          ls -R android-build || echo "android-build not found"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
           path: android-build/**/*.apk
+          if-no-files-found: error
+          
