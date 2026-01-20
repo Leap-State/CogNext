@@ -1,81 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, CheckCircle, Brain, Heart, Briefcase, Users, Zap, Activity, Share2 } from 'lucide-react';
+import { ChevronLeft, Brain, Heart, Briefcase, Users, Zap, Activity, Share2, Shuffle } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { Button } from '@/components/ui/button';
-import { TestType, Question } from '@/types';
+import { TestType } from '@/types';
 import { getScoreLabel } from '@/lib/scoreLabels';
+import { testQuestions, testInfo } from '@/data/testQuestions';
 
-const testQuestions: Record<string, Question[]> = {
-  iq: [
-    { id: 1, text: 'Qual número vem a seguir: 2, 4, 8, 16, ?', options: ['24', '32', '28', '20'], correctIndex: 1 },
-    { id: 2, text: 'Se CASA = 4, PORTA = 5, então JANELA = ?', options: ['5', '6', '7', '8'], correctIndex: 1 },
-    { id: 3, text: 'Complete a sequência: A, C, E, G, ?', options: ['H', 'I', 'J', 'K'], correctIndex: 1 },
-    { id: 4, text: 'Qual figura completa o padrão? ○□△ ○□△ ○□?', options: ['○', '□', '△', '◇'], correctIndex: 2 },
-    { id: 5, text: 'Se 3 + 5 = 16, 4 + 6 = 24, então 5 + 7 = ?', options: ['32', '35', '36', '40'], correctIndex: 2 },
-    { id: 6, text: 'Quantos triângulos você pode contar em um triângulo dividido em 4 partes?', options: ['4', '5', '6', '8'], correctIndex: 1 },
-    { id: 7, text: 'Se ontem foi dois dias antes de sexta, que dia é amanhã?', options: ['Domingo', 'Segunda', 'Sábado', 'Sexta'], correctIndex: 0 },
-    { id: 8, text: 'Qual é o próximo número: 1, 1, 2, 3, 5, 8, ?', options: ['11', '12', '13', '15'], correctIndex: 2 },
-  ],
-  eq: [
-    { id: 1, text: 'Quando alguém te critica, você geralmente:', options: ['Fico muito chateado(a)', 'Reflito sobre o feedback', 'Ignoro completamente', 'Contra-ataco'], correctIndex: 1 },
-    { id: 2, text: 'Em situações de estresse, você:', options: ['Respiro fundo e analiso', 'Fico ansioso(a)', 'Evito pensar nisso', 'Procuro ajuda'], correctIndex: 0 },
-    { id: 3, text: 'Quando um amigo está triste, você:', options: ['Tento animá-lo(a)', 'Escuto atentamente', 'Dou espaço', 'Dou conselhos'], correctIndex: 1 },
-    { id: 4, text: 'Como você lida com conflitos?', options: ['Evito a todo custo', 'Busco compromisso', 'Imponho minha visão', 'Deixo o tempo resolver'], correctIndex: 1 },
-    { id: 5, text: 'Você consegue identificar suas emoções facilmente?', options: ['Sempre', 'Geralmente', 'Às vezes', 'Raramente'], correctIndex: 0 },
-    { id: 6, text: 'Quando alguém discorda de você em público, você:', options: ['Fico defensivo(a)', 'Considero o ponto de vista', 'Mudo de assunto', 'Discuto para provar meu ponto'], correctIndex: 1 },
-    { id: 7, text: 'Como você reage a mudanças inesperadas?', options: ['Adapto-me facilmente', 'Fico ansioso(a) no início', 'Resisto à mudança', 'Depende da situação'], correctIndex: 0 },
-    { id: 8, text: 'Você consegue motivar outras pessoas?', options: ['Naturalmente', 'Com esforço', 'Raramente', 'Nunca tentei'], correctIndex: 0 },
-  ],
-  personality: [
-    { id: 1, text: 'Em festas, você prefere:', options: ['Conversar com muitas pessoas', 'Ficar com amigos próximos', 'Observar de longe', 'Depende do humor'], correctIndex: 0 },
-    { id: 2, text: 'Ao tomar decisões, você confia mais em:', options: ['Lógica e fatos', 'Intuição e sentimentos', 'Experiências passadas', 'Opiniões de outros'], correctIndex: 0 },
-    { id: 3, text: 'Você se considera mais:', options: ['Planejador(a)', 'Espontâneo(a)', 'Ambos igualmente', 'Nenhum dos dois'], correctIndex: 0 },
-    { id: 4, text: 'Em trabalhos em grupo, você prefere:', options: ['Liderar', 'Colaborar', 'Trabalhar independente', 'Depende da tarefa'], correctIndex: 0 },
-    { id: 5, text: 'Como você recarrega suas energias?', options: ['Socializando', 'Ficando sozinho(a)', 'Praticando hobbies', 'Descansando'], correctIndex: 0 },
-    { id: 6, text: 'Quando enfrenta um problema, você:', options: ['Analisa logicamente', 'Segue o instinto', 'Pede conselhos', 'Espera resolver sozinho'], correctIndex: 0 },
-    { id: 7, text: 'Você prefere ambientes:', options: ['Movimentados', 'Tranquilos', 'Variados', 'Não tenho preferência'], correctIndex: 0 },
-    { id: 8, text: 'Como você lida com prazos?', options: ['Antecipo-me sempre', 'Faço no tempo certo', 'Deixo para última hora', 'Depende da importância'], correctIndex: 0 },
-  ],
-  vocational: [
-    { id: 1, text: 'Qual área mais te interessa?', options: ['Tecnologia', 'Saúde', 'Artes', 'Negócios'], correctIndex: 0 },
-    { id: 2, text: 'Você prefere trabalhar com:', options: ['Dados e números', 'Pessoas', 'Ideias criativas', 'Processos'], correctIndex: 0 },
-    { id: 3, text: 'Ambiente de trabalho ideal:', options: ['Escritório estruturado', 'Remoto/Flexível', 'Externo/Campo', 'Laboratório'], correctIndex: 0 },
-    { id: 4, text: 'O que mais te motiva?', options: ['Dinheiro', 'Impacto social', 'Reconhecimento', 'Crescimento pessoal'], correctIndex: 0 },
-    { id: 5, text: 'Como você resolve problemas?', options: ['Analiticamente', 'Criativamente', 'Colaborativamente', 'Intuitivamente'], correctIndex: 0 },
-    { id: 6, text: 'Você prefere tarefas:', options: ['Repetitivas e previsíveis', 'Variadas e desafiadoras', 'Criativas e artísticas', 'Focadas em pessoas'], correctIndex: 0 },
-    { id: 7, text: 'O que você valoriza mais em um emprego?', options: ['Estabilidade', 'Flexibilidade', 'Desafios', 'Equipe'], correctIndex: 0 },
-    { id: 8, text: 'Seu estilo de liderança é:', options: ['Diretivo', 'Democrático', 'Prefiro não liderar', 'Inspiracional'], correctIndex: 0 },
-  ],
-  neuro: [
-    { id: 1, text: 'Lembre-se desta sequência: 7, 3, 9, 1. Qual era o segundo número?', options: ['7', '3', '9', '1'], correctIndex: 1 },
-    { id: 2, text: 'Qual palavra NÃO pertence ao grupo: Maçã, Banana, Cenoura, Laranja?', options: ['Maçã', 'Banana', 'Cenoura', 'Laranja'], correctIndex: 2 },
-    { id: 3, text: 'Se "gato" é para "felino", então "cachorro" é para:', options: ['Canino', 'Animal', 'Pet', 'Mamífero'], correctIndex: 0 },
-    { id: 4, text: 'Quantos segundos há em 2 minutos e 30 segundos?', options: ['130', '150', '160', '180'], correctIndex: 1 },
-    { id: 5, text: 'Qual é o resultado de 15 - 7 + 3 × 2?', options: ['14', '22', '16', '12'], correctIndex: 0 },
-    { id: 6, text: 'Complete: Livro está para Biblioteca assim como Dinheiro está para:', options: ['Banco', 'Carteira', 'Economia', 'Compra'], correctIndex: 0 },
-    { id: 7, text: 'Se invertermos "AMOR", teremos:', options: ['ROMA', 'RAMO', 'MORA', 'ARMO'], correctIndex: 0 },
-    { id: 8, text: 'Qual número está faltando: 3, 6, ?, 12, 15', options: ['8', '9', '10', '11'], correctIndex: 1 },
-  ],
-  psych: [
-    { id: 1, text: 'Nas últimas semanas, você se sentiu mais:', options: ['Animado(a)', 'Normal', 'Ansioso(a)', 'Triste'], correctIndex: 0 },
-    { id: 2, text: 'Como está seu sono?', options: ['Ótimo', 'Regular', 'Irregular', 'Ruim'], correctIndex: 0 },
-    { id: 3, text: 'Você tem conseguido se concentrar?', options: ['Muito bem', 'Bem', 'Com dificuldade', 'Muito difícil'], correctIndex: 0 },
-    { id: 4, text: 'Como está seu nível de energia?', options: ['Alto', 'Normal', 'Baixo', 'Muito baixo'], correctIndex: 0 },
-    { id: 5, text: 'Você se sente satisfeito(a) com sua vida?', options: ['Muito', 'Moderadamente', 'Pouco', 'Nada'], correctIndex: 0 },
-    { id: 6, text: 'Com que frequência você se sente sobrecarregado(a)?', options: ['Raramente', 'Às vezes', 'Frequentemente', 'Sempre'], correctIndex: 0 },
-    { id: 7, text: 'Você consegue relaxar facilmente?', options: ['Sim, sempre', 'Na maioria das vezes', 'Com dificuldade', 'Quase nunca'], correctIndex: 0 },
-    { id: 8, text: 'Como está sua autoestima atualmente?', options: ['Muito boa', 'Boa', 'Regular', 'Baixa'], correctIndex: 0 },
-  ],
+const testIcons: Record<string, React.ElementType> = {
+  iq: Brain,
+  eq: Heart,
+  personality: Users,
+  vocational: Briefcase,
+  neuro: Zap,
+  psych: Activity,
 };
 
-const testInfo: Record<string, { title: string; icon: React.ElementType; gradient: string }> = {
-  iq: { title: 'Teste de QI', icon: Brain, gradient: 'gradient-primary' },
-  eq: { title: 'Inteligência Emocional', icon: Heart, gradient: 'bg-gradient-to-br from-pink-500 to-rose-500' },
-  personality: { title: 'Personalidade', icon: Users, gradient: 'bg-gradient-to-br from-purple-500 to-violet-500' },
-  vocational: { title: 'Teste Vocacional', icon: Briefcase, gradient: 'bg-gradient-to-br from-emerald-500 to-teal-500' },
-  neuro: { title: 'Neuroavaliação', icon: Zap, gradient: 'bg-gradient-to-br from-amber-500 to-orange-500' },
-  psych: { title: 'Avaliação Psicológica', icon: Activity, gradient: 'bg-gradient-to-br from-cyan-500 to-blue-500' },
+// Função para embaralhar array
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
 };
 
 export const TestRunner: React.FC = () => {
@@ -89,9 +37,15 @@ export const TestRunner: React.FC = () => {
   const [score, setScore] = useState(0);
 
   const testType = type?.toLowerCase() || 'iq';
-  const questions = testQuestions[testType] || testQuestions.iq;
   const info = testInfo[testType] || testInfo.iq;
-  const Icon = info.icon;
+  const Icon = testIcons[testType] || Brain;
+  
+  // Embaralha e seleciona 10 perguntas aleatórias
+  const questions = useMemo(() => {
+    const allQuestions = testQuestions[testType] || testQuestions.iq;
+    const shuffled = shuffleArray(allQuestions);
+    return shuffled.slice(0, Math.min(10, shuffled.length));
+  }, [testType]);
 
   const handleAnswer = (index: number) => {
     const newAnswers = [...answers, index];
