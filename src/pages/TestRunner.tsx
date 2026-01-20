@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, CheckCircle, Brain, Heart, Briefcase, Users, Zap, Activity } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle, Brain, Heart, Briefcase, Users, Zap, Activity, Share2 } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { Button } from '@/components/ui/button';
 import { TestType, Question } from '@/types';
+import { getScoreLabel } from '@/lib/scoreLabels';
 
 const testQuestions: Record<string, Question[]> = {
   iq: [
@@ -12,6 +13,9 @@ const testQuestions: Record<string, Question[]> = {
     { id: 3, text: 'Complete a sequência: A, C, E, G, ?', options: ['H', 'I', 'J', 'K'], correctIndex: 1 },
     { id: 4, text: 'Qual figura completa o padrão? ○□△ ○□△ ○□?', options: ['○', '□', '△', '◇'], correctIndex: 2 },
     { id: 5, text: 'Se 3 + 5 = 16, 4 + 6 = 24, então 5 + 7 = ?', options: ['32', '35', '36', '40'], correctIndex: 2 },
+    { id: 6, text: 'Quantos triângulos você pode contar em um triângulo dividido em 4 partes?', options: ['4', '5', '6', '8'], correctIndex: 1 },
+    { id: 7, text: 'Se ontem foi dois dias antes de sexta, que dia é amanhã?', options: ['Domingo', 'Segunda', 'Sábado', 'Sexta'], correctIndex: 0 },
+    { id: 8, text: 'Qual é o próximo número: 1, 1, 2, 3, 5, 8, ?', options: ['11', '12', '13', '15'], correctIndex: 2 },
   ],
   eq: [
     { id: 1, text: 'Quando alguém te critica, você geralmente:', options: ['Fico muito chateado(a)', 'Reflito sobre o feedback', 'Ignoro completamente', 'Contra-ataco'], correctIndex: 1 },
@@ -19,6 +23,9 @@ const testQuestions: Record<string, Question[]> = {
     { id: 3, text: 'Quando um amigo está triste, você:', options: ['Tento animá-lo(a)', 'Escuto atentamente', 'Dou espaço', 'Dou conselhos'], correctIndex: 1 },
     { id: 4, text: 'Como você lida com conflitos?', options: ['Evito a todo custo', 'Busco compromisso', 'Imponho minha visão', 'Deixo o tempo resolver'], correctIndex: 1 },
     { id: 5, text: 'Você consegue identificar suas emoções facilmente?', options: ['Sempre', 'Geralmente', 'Às vezes', 'Raramente'], correctIndex: 0 },
+    { id: 6, text: 'Quando alguém discorda de você em público, você:', options: ['Fico defensivo(a)', 'Considero o ponto de vista', 'Mudo de assunto', 'Discuto para provar meu ponto'], correctIndex: 1 },
+    { id: 7, text: 'Como você reage a mudanças inesperadas?', options: ['Adapto-me facilmente', 'Fico ansioso(a) no início', 'Resisto à mudança', 'Depende da situação'], correctIndex: 0 },
+    { id: 8, text: 'Você consegue motivar outras pessoas?', options: ['Naturalmente', 'Com esforço', 'Raramente', 'Nunca tentei'], correctIndex: 0 },
   ],
   personality: [
     { id: 1, text: 'Em festas, você prefere:', options: ['Conversar com muitas pessoas', 'Ficar com amigos próximos', 'Observar de longe', 'Depende do humor'], correctIndex: 0 },
@@ -26,6 +33,9 @@ const testQuestions: Record<string, Question[]> = {
     { id: 3, text: 'Você se considera mais:', options: ['Planejador(a)', 'Espontâneo(a)', 'Ambos igualmente', 'Nenhum dos dois'], correctIndex: 0 },
     { id: 4, text: 'Em trabalhos em grupo, você prefere:', options: ['Liderar', 'Colaborar', 'Trabalhar independente', 'Depende da tarefa'], correctIndex: 0 },
     { id: 5, text: 'Como você recarrega suas energias?', options: ['Socializando', 'Ficando sozinho(a)', 'Praticando hobbies', 'Descansando'], correctIndex: 0 },
+    { id: 6, text: 'Quando enfrenta um problema, você:', options: ['Analisa logicamente', 'Segue o instinto', 'Pede conselhos', 'Espera resolver sozinho'], correctIndex: 0 },
+    { id: 7, text: 'Você prefere ambientes:', options: ['Movimentados', 'Tranquilos', 'Variados', 'Não tenho preferência'], correctIndex: 0 },
+    { id: 8, text: 'Como você lida com prazos?', options: ['Antecipo-me sempre', 'Faço no tempo certo', 'Deixo para última hora', 'Depende da importância'], correctIndex: 0 },
   ],
   vocational: [
     { id: 1, text: 'Qual área mais te interessa?', options: ['Tecnologia', 'Saúde', 'Artes', 'Negócios'], correctIndex: 0 },
@@ -33,6 +43,9 @@ const testQuestions: Record<string, Question[]> = {
     { id: 3, text: 'Ambiente de trabalho ideal:', options: ['Escritório estruturado', 'Remoto/Flexível', 'Externo/Campo', 'Laboratório'], correctIndex: 0 },
     { id: 4, text: 'O que mais te motiva?', options: ['Dinheiro', 'Impacto social', 'Reconhecimento', 'Crescimento pessoal'], correctIndex: 0 },
     { id: 5, text: 'Como você resolve problemas?', options: ['Analiticamente', 'Criativamente', 'Colaborativamente', 'Intuitivamente'], correctIndex: 0 },
+    { id: 6, text: 'Você prefere tarefas:', options: ['Repetitivas e previsíveis', 'Variadas e desafiadoras', 'Criativas e artísticas', 'Focadas em pessoas'], correctIndex: 0 },
+    { id: 7, text: 'O que você valoriza mais em um emprego?', options: ['Estabilidade', 'Flexibilidade', 'Desafios', 'Equipe'], correctIndex: 0 },
+    { id: 8, text: 'Seu estilo de liderança é:', options: ['Diretivo', 'Democrático', 'Prefiro não liderar', 'Inspiracional'], correctIndex: 0 },
   ],
   neuro: [
     { id: 1, text: 'Lembre-se desta sequência: 7, 3, 9, 1. Qual era o segundo número?', options: ['7', '3', '9', '1'], correctIndex: 1 },
@@ -40,6 +53,9 @@ const testQuestions: Record<string, Question[]> = {
     { id: 3, text: 'Se "gato" é para "felino", então "cachorro" é para:', options: ['Canino', 'Animal', 'Pet', 'Mamífero'], correctIndex: 0 },
     { id: 4, text: 'Quantos segundos há em 2 minutos e 30 segundos?', options: ['130', '150', '160', '180'], correctIndex: 1 },
     { id: 5, text: 'Qual é o resultado de 15 - 7 + 3 × 2?', options: ['14', '22', '16', '12'], correctIndex: 0 },
+    { id: 6, text: 'Complete: Livro está para Biblioteca assim como Dinheiro está para:', options: ['Banco', 'Carteira', 'Economia', 'Compra'], correctIndex: 0 },
+    { id: 7, text: 'Se invertermos "AMOR", teremos:', options: ['ROMA', 'RAMO', 'MORA', 'ARMO'], correctIndex: 0 },
+    { id: 8, text: 'Qual número está faltando: 3, 6, ?, 12, 15', options: ['8', '9', '10', '11'], correctIndex: 1 },
   ],
   psych: [
     { id: 1, text: 'Nas últimas semanas, você se sentiu mais:', options: ['Animado(a)', 'Normal', 'Ansioso(a)', 'Triste'], correctIndex: 0 },
@@ -47,6 +63,9 @@ const testQuestions: Record<string, Question[]> = {
     { id: 3, text: 'Você tem conseguido se concentrar?', options: ['Muito bem', 'Bem', 'Com dificuldade', 'Muito difícil'], correctIndex: 0 },
     { id: 4, text: 'Como está seu nível de energia?', options: ['Alto', 'Normal', 'Baixo', 'Muito baixo'], correctIndex: 0 },
     { id: 5, text: 'Você se sente satisfeito(a) com sua vida?', options: ['Muito', 'Moderadamente', 'Pouco', 'Nada'], correctIndex: 0 },
+    { id: 6, text: 'Com que frequência você se sente sobrecarregado(a)?', options: ['Raramente', 'Às vezes', 'Frequentemente', 'Sempre'], correctIndex: 0 },
+    { id: 7, text: 'Você consegue relaxar facilmente?', options: ['Sim, sempre', 'Na maioria das vezes', 'Com dificuldade', 'Quase nunca'], correctIndex: 0 },
+    { id: 8, text: 'Como está sua autoestima atualmente?', options: ['Muito boa', 'Boa', 'Regular', 'Baixa'], correctIndex: 0 },
   ],
 };
 
@@ -106,6 +125,8 @@ export const TestRunner: React.FC = () => {
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   if (isComplete) {
+    const scoreInfo = getScoreLabel(testType, score);
+    
     return (
       <div className="min-h-screen flex flex-col">
         {/* Header */}
@@ -119,12 +140,13 @@ export const TestRunner: React.FC = () => {
         {/* Result */}
         <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-scale-in">
           <div className={`w-24 h-24 rounded-full ${info.gradient} flex items-center justify-center mb-6 shadow-lg`}>
-            <CheckCircle className="w-12 h-12 text-white" />
+            <span className="text-4xl">{scoreInfo.emoji}</span>
           </div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">Teste Completo!</h2>
-          <p className="text-muted-foreground mb-8">{t.yourScore || 'Sua pontuação'}:</p>
           
-          <div className="relative w-40 h-40 mb-8">
+          <h2 className="text-2xl font-bold text-foreground mb-2">{scoreInfo.label}</h2>
+          <p className="text-muted-foreground mb-6 max-w-xs">{scoreInfo.description}</p>
+          
+          <div className="relative w-40 h-40 mb-6">
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
               <circle
                 cx="50"
@@ -151,20 +173,40 @@ export const TestRunner: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex gap-3 w-full max-w-xs">
+          <p className="text-sm text-muted-foreground mb-6">{t.yourScore || 'Sua pontuação'}</p>
+
+          <div className="flex flex-col gap-3 w-full max-w-xs">
             <Button
-              onClick={() => navigate('/discover')}
-              variant="outline"
-              className="flex-1"
+              onClick={() => {
+                const shareText = `🧠 Fiz o ${info.title} no CogNext e meu resultado foi: ${scoreInfo.emoji} ${scoreInfo.label}! Faça o seu também!`;
+                if (navigator.share) {
+                  navigator.share({ text: shareText });
+                } else {
+                  navigator.clipboard.writeText(shareText);
+                }
+              }}
+              className="w-full gradient-primary"
             >
-              {t.back || 'Voltar'}
+              <Share2 size={18} className="mr-2" />
+              Compartilhar Resultado
             </Button>
-            <Button
-              onClick={() => navigate('/profile')}
-              className="flex-1 gradient-primary"
-            >
-              Ver Perfil
-            </Button>
+            
+            <div className="flex gap-3">
+              <Button
+                onClick={() => navigate('/discover')}
+                variant="outline"
+                className="flex-1"
+              >
+                {t.back || 'Voltar'}
+              </Button>
+              <Button
+                onClick={() => navigate('/profile')}
+                variant="outline"
+                className="flex-1"
+              >
+                Ver Perfil
+              </Button>
+            </div>
           </div>
         </div>
       </div>

@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { Heart, MessageCircle, Share2, MoreHorizontal, Image, X, Send, Trash2, Edit3 } from 'lucide-react';
+import { Heart, MessageCircle, Share2, MoreHorizontal, Image, X, Send, Trash2, Edit3, Hash } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR, enUS } from 'date-fns/locale';
+import { TopicSelector, getTopics } from '@/components/TopicSelector';
 
 export const Feed: React.FC = () => {
   const { posts, users, user, addPost, editPost, deletePost, likePost, addComment, t, language } = useApp();
@@ -18,6 +19,8 @@ export const Feed: React.FC = () => {
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [openCommentsId, setOpenCommentsId] = useState<string | null>(null);
   const [commentText, setCommentText] = useState('');
+  const [selectedTopic, setSelectedTopic] = useState<string>('all');
+  const [postTopic, setPostTopic] = useState<string>('all');
 
   const locale = language === 'PT' ? ptBR : enUS;
 
@@ -55,7 +58,8 @@ export const Feed: React.FC = () => {
     <div className="pb-4">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-card/95 backdrop-blur-lg border-b border-border px-4 py-3">
-        <h1 className="text-xl font-bold text-foreground">Feed</h1>
+        <h1 className="text-xl font-bold text-foreground mb-3">Feed</h1>
+        <TopicSelector selectedTopic={selectedTopic} onSelectTopic={setSelectedTopic} />
       </div>
 
       {/* Create Post */}
@@ -90,6 +94,24 @@ export const Feed: React.FC = () => {
                 </button>
               </div>
             )}
+
+            {/* Topic selector for new post */}
+            <div className="flex items-center gap-2 mt-3 overflow-x-auto pb-1">
+              <Hash size={16} className="text-muted-foreground flex-shrink-0" />
+              {getTopics().slice(1).map((topic) => (
+                <button
+                  key={topic.id}
+                  onClick={() => setPostTopic(topic.id)}
+                  className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+                    postTopic === topic.id
+                      ? `${topic.color} text-white`
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                  }`}
+                >
+                  {topic.name}
+                </button>
+              ))}
+            </div>
 
             <div className="flex items-center justify-between mt-3">
               <button
