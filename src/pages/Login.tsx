@@ -172,10 +172,6 @@ export const Login: React.FC = () => {
           </div>
         </div>
 
-        {/* Demo credentials */}
-        <p className="text-center text-muted-foreground text-xs mt-6">
-          Demo: maria / 123456
-        </p>
       </div>
     </div>
   );
